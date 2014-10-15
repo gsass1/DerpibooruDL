@@ -3,15 +3,12 @@ import urllib.request
 import os
 import os.path
 import sys
-from pprint import pprint
 
 destdir = ""
 searched_tag = ""
 maxpages = 30
 
 def downloadallimages(images):
-    global destdir
-    global searched_tag
     for image in images:
         # Download ze file
         url = image["image"]
@@ -28,8 +25,6 @@ def stringwithnoquotes(string):
     return string
 
 def main():
-    global destdir
-    global searched_tag
     if len(sys.argv) != 4:
         print("Usage: %s <destdir> <tagname> <maxpages>" % sys.argv[0])
         return
@@ -38,12 +33,16 @@ def main():
     maxpages = int(sys.argv[3])
     for i in range(1, maxpages):
         url = "https://derpiboo.ru/search.json?q=%s&page=%d" % (searched_tag, i)
-        print(url)
+        print("Searching page %d" % i)
         response = urllib.request.urlopen(url)
         data = response.read().decode("utf-8")
         j = json.loads(data)
         images = j["search"]
-        downloadallimages(images)
+        if images:
+            downloadallimages(images)
+        else:
+            print("Received empty list, quitting.")
+            return
 
 if __name__ == "__main__":
     main()
