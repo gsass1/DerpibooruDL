@@ -10,7 +10,6 @@ maxpages = 30
 
 def downloadallimages(images):
     for image in images:
-        # Download ze file
         url = image["image"]
         url = "https:" + url
         filename = os.path.basename(url)
@@ -25,12 +24,13 @@ def stringwithnoquotes(string):
     return string
 
 def main():
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         print("Usage: %s <destdir> <tagname> <maxpages>" % sys.argv[0])
         return
     destdir = stringwithnoquotes(sys.argv[1])
     searched_tag = stringwithnoquotes(sys.argv[2])
-    maxpages = int(sys.argv[3])
+    if len(sys.argv) > 4:
+        maxpages = int(sys.argv[3])
     for i in range(1, maxpages):
         url = "https://derpiboo.ru/search.json?q=%s&page=%d" % (searched_tag, i)
         print("Searching page %d" % i)
