@@ -42,6 +42,3 @@ for i in range(1, maxpages):
     else:
         print("Received empty list, quitting.")
         exit()
-
-if __name__ == "__main__":
-    main()
