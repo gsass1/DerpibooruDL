@@ -23,6 +23,10 @@ def stringwithnoquotes(string):
         string = string[1:-1]
     return string
 
+apikey = os.getenv("DERPIBOORUAPIKEY")
+if apikey is None:
+    print("No API key was set! (DERPIBOORUAPIKEY)")
+    apikey = ""
 if len(sys.argv) < 3:
     print("Usage: %s <destdir> <tagname> <maxpages>" % sys.argv[0])
     exit()
@@ -31,7 +35,7 @@ searched_tag = stringwithnoquotes(sys.argv[2])
 if len(sys.argv) > 3:
     maxpages = int(sys.argv[3])
 for i in range(1, maxpages):
-    url = "https://derpiboo.ru/search.json?q=%s&page=%d" % (searched_tag, i)
+    url = "https://derpiboo.ru/search.json?q=%s&page=%d&key=%s" % (searched_tag, i, apikey)
     print("Searching page %d" % i)
     response = urllib.request.urlopen(url)
     data = response.read().decode("utf-8")
