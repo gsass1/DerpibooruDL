@@ -21,7 +21,7 @@ def downloadallimages(images):
             urllib.request.urlretrieve(url, filepath)
             if shortfilenames:
                 filetype = os.path.splitext(filepath)[1]
-                os.rename(filename, destdir + "/" + id + filetype)
+                os.rename(filepath, destdir + "/" + id + filetype)
             
 def stringwithnoquotes(string):
     if string.startswith('"') and string.endswith('"'):
@@ -36,6 +36,8 @@ if len(sys.argv) < 3:
     print("Usage: %s <destdir> <tagname> <maxpages>" % sys.argv[0])
     exit()
 destdir = stringwithnoquotes(sys.argv[1])
+# Remove last character its a slash
+destdir = destdir.rstrip("/")
 searched_tag = stringwithnoquotes(sys.argv[2])
 if len(sys.argv) > 3:
     maxpages = int(sys.argv[3])
