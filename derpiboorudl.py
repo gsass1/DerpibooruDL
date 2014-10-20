@@ -7,9 +7,11 @@ import sys
 destdir = ""
 searched_tag = ""
 maxpages = 30
+shortfilenames = False
 
 def downloadallimages(images):
     for image in images:
+        id = str(image["id_number"])
         url = image["image"]
         url = "https:" + url
         filename = os.path.basename(url)
@@ -17,6 +19,9 @@ def downloadallimages(images):
         if not os.path.isfile(filepath):
             print("Downloading %s" % url)
             urllib.request.urlretrieve(url, filepath)
+            if shortfilenames:
+                filetype = os.path.splitext(filepath)[1]
+                os.rename(filename, destdir + "/" + id + filetype)
             
 def stringwithnoquotes(string):
     if string.startswith('"') and string.endswith('"'):
@@ -34,6 +39,10 @@ destdir = stringwithnoquotes(sys.argv[1])
 searched_tag = stringwithnoquotes(sys.argv[2])
 if len(sys.argv) > 3:
     maxpages = int(sys.argv[3])
+if len(sys.argv) > 4:
+    for arg in sys.argv[4:]:
+        if arg == "-s" or arg == "--shortnames":
+            shortfilenames = True
 for i in range(1, maxpages):
     url = "https://derpiboo.ru/search.json?q=%s&page=%d&key=%s" % (searched_tag, i, apikey)
     print("Searching page %d" % i)
