@@ -1,13 +1,25 @@
+import logging
 import json
 import urllib.request
 import os
 import os.path
 import sys
 
+logger = None
 destdir = ""
 searched_tag = ""
 maxpages = 30
 shortfilenames = False
+
+def setup_logger(log):
+    log.setLevel(logging.DEBUG)
+
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
 
 def downloadallimages(images):
     for image in images:
@@ -17,7 +29,7 @@ def downloadallimages(images):
         filename = os.path.basename(url)
         filepath = os.path.join(destdir, filename)
         if not os.path.isfile(filepath):
-            print("Downloading %s" % url)
+            logger.info("Downloading %s" % url)
             urllib.request.urlretrieve(url, filepath)
             if shortfilenames:
                 filetype = os.path.splitext(filepath)[1]
@@ -28,9 +40,12 @@ def stringwithnoquotes(string):
         string = string[1:-1]
     return string
 
+logger = logging.getLogger("derpiboorudl")
+setup_logger(logger)
+
 apikey = os.getenv("DERPIBOORUAPIKEY")
 if apikey is None:
-    print("No API key was set! (DERPIBOORUAPIKEY)")
+    logger.info("No API key was set! (DERPIBOORUAPIKEY)")
     apikey = ""
 
 if len(sys.argv) < 3:
@@ -53,7 +68,7 @@ if len(sys.argv) > 4:
 
 for i in range(1, maxpages):
     url = "https://derpiboo.ru/search.json?q=%s&page=%d&key=%s" % (searched_tag, i, apikey)
-    print("Searching page %d" % i)
+    logger.info("Searching page %d" % i)
     response = urllib.request.urlopen(url)
     data = response.read().decode("utf-8")
     j = json.loads(data)
@@ -61,5 +76,5 @@ for i in range(1, maxpages):
     if images:
         downloadallimages(images)
     else:
-        print("Received empty list, quitting.")
+        logger.info("Received empty list, quitting.")
         exit()
