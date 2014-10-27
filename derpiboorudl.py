@@ -1,3 +1,4 @@
+import argparse
 import logging
 import json
 import urllib.request
@@ -43,28 +44,31 @@ def stringwithnoquotes(string):
 logger = logging.getLogger("derpiboorudl")
 setup_logger(logger)
 
+# Read API key from env (will get overriden by --key option when given)
 apikey = os.getenv("DERPIBOORUAPIKEY")
+
+# Parse args
+parser = argparse.ArgumentParser()
+parser.add_argument("destdir", help="Location where downloaded images will be drop off")
+parser.add_argument("query", help="The Derpibooru query you wish to execute")
+parser.add_argument("--pages", help="The amount of pages you wish to download", type=int)
+parser.add_argument("--shortfilenames", help="If you want only short file names (id.ext)", action="store_true")
+parser.add_argument("--key", help="Specify the API key (normally present as env variable)")
+args = parser.parse_args()
+
+destdir = args.destdir 
+searched_tag = args.query 
+
+if args.pages:
+    maxpages = args.pages
+
+if args.shortfilenames:
+    shortfilenames = True
+
+apikey = args.key
+
 if apikey is None:
     logger.info("No API key was set! (DERPIBOORUAPIKEY)")
-    apikey = ""
-
-if len(sys.argv) < 3:
-    print("Usage: %s <destdir> <tagname> <maxpages>" % sys.argv[0])
-    exit()
-
-destdir = stringwithnoquotes(sys.argv[1])
-
-# Remove last character if its a slash
-destdir = destdir.rstrip("/")
-searched_tag = stringwithnoquotes(sys.argv[2])
-
-if len(sys.argv) > 3:
-    maxpages = int(sys.argv[3])
-
-if len(sys.argv) > 4:
-    for arg in sys.argv[4:]:
-        if arg == "-s" or arg == "--shortnames":
-            shortfilenames = True
 
 for i in range(1, maxpages):
     url = "https://derpiboo.ru/search.json?q=%s&page=%d&key=%s" % (searched_tag, i, apikey)

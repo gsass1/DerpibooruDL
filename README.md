@@ -4,22 +4,20 @@ Simple program to automise large downloading of images from Derpibooru.
 
 ## Prerequisites
 
-Python 3.4
+* Python 3.4
 
 ## Usage
 
-derpiboorudl.py destination tags pages
+> derpiboorudl.py destdir query [options] 
 
-Example:
-> derpiboorudl.py ~/Pictures/lotsofpone "cute,derpy+hooves"
 
-Note that specifying the pages is optional and is 30 by default (e.g. a lot)
-You can also set your API key.
-> export DERPIBOORUAPIKEY=yourkey
+destdir: the destination where the images should be loaded to
 
-### Short file names
 
-You can get short file names (only the image ID + extension) by appending the "-s" option.
+query: the Derpibooru query you want to query for
+
+
+Options are: _--pages_ the specify the amount of pages you want to download, _--key_ to set the API key, which is read in by the DERPIBOORUAPIKEY environment variable by default), _--shortfilenames_ if you want to download images as ID.EXT instead of ID\_\_tags.EXT 
 
 ## Todo
 
