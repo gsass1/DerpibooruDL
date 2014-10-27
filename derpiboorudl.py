@@ -16,7 +16,6 @@ def downloadallimages(images):
         url = "https:" + url
         filename = os.path.basename(url)
         filepath = os.path.join(destdir, filename)
-        print(filepath)
         if not os.path.isfile(filepath):
             print("Downloading %s" % url)
             urllib.request.urlretrieve(url, filepath)
