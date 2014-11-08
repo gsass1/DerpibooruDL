@@ -72,7 +72,7 @@ apikey = args.key
 if apikey is None:
     logger.info("No API key was set! (DERPIBOORUAPIKEY)")
 
-for i in range(1, maxpages):
+for i in range(maxpages):
     url = "https://derpiboo.ru/search.json?q=%s&page=%d&key=%s" % (searched_tag, i, apikey)
     logger.info("Searching page %d" % i)
     response = urllib.request.urlopen(url)
