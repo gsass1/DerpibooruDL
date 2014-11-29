@@ -10,13 +10,13 @@ Simple program to automise large downloading of images from Derpibooru.
 
 ## Usage
 
-> ./derpiboorudl.py destdir query [options] 
+> ./derpiboorudl.py -d destdir -q query [options]
 
 
-destdir: the destination where the images should be saved to
+-d/--destdir: the destination where the images should be saved to
 
 
-query: the Derpibooru search you want to query for
+-q/--query: the Derpibooru search you want to query for
 
 
-Options are: _--count_ the specify the count of images you want to download, _--key_ to set the API key (which is read in by the DERPIBOORUAPIKEY environment variable by default)
+Options are: _-c/--count_ the specify the count of images you want to download, _-k/--key_ to set the API key (which is read in by the DERPIBOORUAPIKEY environment variable by default)
