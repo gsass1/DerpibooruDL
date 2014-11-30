@@ -1,15 +1,25 @@
 #!/usr/bin/env python
 
 from derpibooru import Search
+from requests import get, codes
 
 import argparse
 import logging
-import urllib
 import os
 import os.path
 import sys
 
 logger = None
+
+def download_file(url, fname):
+    r, chunk_size = get(url, stream=True), 1024
+
+    if r.status_code == codes.ok:
+        with open(fname, "wb") as f:
+            for chunk in r.iter_content(chunk_size): 
+                f.write(chunk)
+
+        return fname
 
 def setup_logger(log):
     log.setLevel(logging.DEBUG)
@@ -51,7 +61,7 @@ def main():
         path = os.path.join(destdir, filename)
         if not os.path.isfile(path):
             logger.info("Now downloading image with id {0}".format(image.id_number))
-            urllib.urlretrieve(image.full, path)
+            download_file(image.full, path)            
 
 if __name__ == "__main__":
     main()
