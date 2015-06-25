@@ -44,9 +44,10 @@ def main():
     parser.add_argument("-q", "--query", default="", help="The Derpibooru query you wish to execute")
     parser.add_argument("-c", "--count", default=100, help="The count of images you wish to download", type=int)
     parser.add_argument("-k", "--key", default=None, help="Specify the API key (normally present as env variable)")
+    parser.add_argument("-nv", "--noverification", action='store_false', default=True, help="Disable image SHA512 verification")
     args = parser.parse_args()
 
-    destdir, query, maximages = args.destdir, args.query, args.count
+    destdir, query, maximages, verification = args.destdir, args.query, args.count, args.noverification
  
     # Read API key from --key if present or else read from env
     apikey = args.key if args.key else os.getenv("DERPIBOORUAPIKEY")
@@ -66,15 +67,15 @@ def main():
             logger.info("Now downloading image with id {0}".format(image.id_number))
 
             download = download_file(image.full)
-            if download:
+            if verification:
                 if image.sha512_hash == sha512_hash(download):
                     with open(path, "wb") as f:
                         f.write(download)
                 else:
                     logger.error("sha512 hashes for {0} don't match up".format(image.id_number))
             else:
-                logger.error("download for {0} didn't complete".format(image.id_number))
-
+                with open(path, "wb") as f:
+                    f.write(download)
 
 if __name__ == "__main__":
     main()
