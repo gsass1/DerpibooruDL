@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 from derpibooru import Search
 from requests import get, codes
@@ -55,6 +55,7 @@ def download_images(search, destdir, verification, logger):
             with open(path, "wb") as f:
                 f.write(download)
 
+# Split a sequence into num chunks
 def chunks(seq, num):
   avg = len(seq) / float(num)
   last = 0.0
@@ -69,7 +70,7 @@ def main():
 
     # Parse args
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--destdir", required=True, help="Location where downloaded images will be dropped off")
+    parser.add_argument("destdir", help="Location where downloaded images will be dropped off")
     parser.add_argument("-q", "--query", default="", help="The Derpibooru query you wish to execute")
     parser.add_argument("-c", "--count", default=100, help="The count of images you wish to download", type=int)
     parser.add_argument("-k", "--key", default=None, help="Specify the API key (normally present as env variable)")
@@ -83,7 +84,7 @@ def main():
     apikey = args.key if args.key else os.getenv("DERPIBOORUAPIKEY")
 
     if not apikey:
-        logger.info("No API key was set! (DERPIBOORUAPIKEY)")
+        logger.warning("No API key was set! (DERPIBOORUAPIKEY)")
 
     search = Search().key(apikey).query(query).limit(maximages)
 
@@ -94,11 +95,11 @@ def main():
         logger.info("Using %d threads" % threadcount)
 
     # Copy the search object to a valid list
-    # FIXME: we should be able to do this without copying the images
     images = []
     for image in search:
         images.append(copy.deepcopy(image))
 
+    # Create threads
     threads = []
     for c in chunks(images, threadcount):
         t = threading.Thread(target = download_images, args = (c, destdir, verification, logger))
@@ -106,9 +107,11 @@ def main():
         t.daemon = True
         t.start()
 
-    while threading.active_count() -1 > 0:
+    # This prevents the threads from hanging when pressing CTRL+C
+    while threading.active_count() - 1 > 0:
         time.sleep(0.1)
 
+    # Make sure threads are stopped
     for t in threads:
         t.join()
 

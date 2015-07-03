@@ -10,10 +10,10 @@ Simple program to automise large downloading of images from Derpibooru.
 
 ## Usage
 
-> ./derpiboorudl.py -d destdir -q query [options]
+> ./derpiboorudl.py destdir -q query [options]
 
 
--d/--destdir: the destination where the images should be saved to
+destdir: the destination where the images should be saved to
 
 
 -q/--query: the Derpibooru search you want to query for
