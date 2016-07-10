@@ -43,14 +43,14 @@ def download_images(search, destdir, verification, logger):
         path = os.path.join(destdir, filename)
         if os.path.isfile(path):
             continue
-        logger.info("Downloading image %d" % image.id_number)
+        logger.info("Downloading image %s" % image)
         download = download_file(image.full)
         if verification:
             if image.sha512_hash == sha512_hash(download):
                 with open(path, "wb") as f:
                     f.write(download)
             else:
-                logger.error("sha512 hashes for {0} don't match up".format(image.id_number))
+                logger.error("sha512 hashes for {0} don't match up".format(image.id))
         else:
             with open(path, "wb") as f:
                 f.write(download)
